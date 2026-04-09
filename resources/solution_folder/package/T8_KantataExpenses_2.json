@@ -1,0 +1,33 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "T8_KantataExpenses_2",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [
+      {
+        "name": "T8_KantataExpenses.1.0.15.nupkg",
+        "kind": "Package",
+        "version": "1.0.15",
+        "url": "https://cloud.uipath.com/91ea466f-1679-4ff2-af29-366c00009beb/1a61cb33-a8ee-44ff-8e34-6adc2f3d2722/orchestrator_/odata/Processes/UiPath.Server.Configuration.OData.DownloadPackage(key=\u0027T8_KantataExpenses:1.0.15\u0027)?feedId=4ae2fc01-f092-420e-a803-641f92f2de01",
+        "key": "T8_KantataExpenses_1.0.15"
+      }
+    ],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": "T8_KantataExpenses.1.0.15.nupkg",
+      "fileReference": "T8_KantataExpenses_1.0.15",
+      "name": "T8_KantataExpenses_2",
+      "description": null
+    },
+    "locks": [],
+    "key": "T8_KantataExpenses:1.0.15"
+  }
+}

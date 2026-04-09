@@ -1,0 +1,71 @@
+{
+  "version": "2.0",
+  "resources": [
+    {
+      "resource": "queue",
+      "key": "ExpensesToUpload",
+      "id": "queueExpensesToUpload",
+      "value": {
+        "folderPath": {
+          "isExpression": false,
+          "displayName": "Folder path"
+        },
+        "name": {
+          "defaultValue": "ExpensesToUpload",
+          "isExpression": false,
+          "displayName": "Queue"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Upload to Kantata (T8_UploadExpense)",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "T8_GetQueueItemData_1",
+      "id": "processT8_GetQueueItemData_1",
+      "value": {
+        "folderPath": {
+          "isExpression": false,
+          "displayName": "Folder path"
+        },
+        "name": {
+          "defaultValue": "T8_GetQueueItemData_1",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Get Queue Item (T8_GetQueueItemData)",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "T8_RunAgent_InvoiceValidation_1",
+      "id": "processT8_RunAgent_InvoiceValidation_1",
+      "value": {
+        "folderPath": {
+          "isExpression": false,
+          "displayName": "Folder path"
+        },
+        "name": {
+          "defaultValue": "T8_RunAgent_InvoiceValidation_1",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Validate Invoice (T8_RunAgent_InvoiceValidation)",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "T8_GetQueueItemData_1",
+    "kind": "process",
+    "type": "process",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "T8_KantataExpenses_2",
+        "kind": "Package"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Process",
+      "jobPriority": "Medium",
+      "jobRecording": "Disabled",
+      "duration": 40,
+      "frequency": 500,
+      "quality": 100,
+      "remoteControlAccess": "None",
+      "name": "T8_GetQueueItemData_1",
+      "package": {
+        "name": "T8_KantataExpenses_2",
+        "key": "T8_KantataExpenses:1.0.15"
+      },
+      "packageName": "T8_KantataExpenses",
+      "packageVersion": "1.0.15",
+      "entryPointUniqueId": "d53cbba6-8202-4a31-a066-562394e44758",
+      "entryPointName": "Main_GetQueueItemData.xaml",
+      "inputArguments": null,
+      "inputArgumentsSchema": "[]",
+      "outputArgumentsSchema": "[\n  {\n    \u0022name\u0022: \u0022out_TransactionItem\u0022,\n    \u0022displayName\u0022: \u0022out_TransactionItem\u0022,\n    \u0022type\u0022: \u0022UiPath.Core.QueueItem, UiPath.System.Activities, Version=25.10.3.0, Culture=neutral, PublicKeyToken=null\u0022\n  }\n]",
+      "inputArgumentsSchemaV2": null,
+      "outputArgumentsSchemaV2": null,
+      "hiddenForAttendedUser": false,
+      "alwaysRunning": false,
+      "autoStartProcess": false,
+      "targetFrameworkValue": "Windows",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "retentionBucketRef": null,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180,
+      "staleRetentionBucketRef": null,
+      "entryPoints": null,
+      "connections": null,
+      "tags": [],
+      "description": "Helps enter in expense information to Kantata."
+    },
+    "locks": [],
+    "key": "5d20917e-441d-4b0a-b78e-bfcb80da39b5"
+  }
+}

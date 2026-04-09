@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Agentic_Main",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "029020c0-6bae-495a-b790-ffed3fb673cd",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "Agentic_Main",
+      "description": null
+    },
+    "locks": [],
+    "key": "8394c93c-a93a-44d3-adb1-c2d6c7003d13"
+  }
+}

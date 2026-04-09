@@ -1,0 +1,19 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/Process.bpmn#Event_m6X5g1",
+      "uniqueId": "74d1e9b7-e11b-43e1-9f07-a82d9e4e6ad7",
+      "type": "ProcessOrchestration",
+      "input": {
+        "type": "object",
+        "properties": {}
+      },
+      "output": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
+}

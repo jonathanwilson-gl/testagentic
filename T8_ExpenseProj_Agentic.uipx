@@ -1,0 +1,12 @@
+{
+  "DocVersion": "1.0.0",
+  "StudioMinVersion": "2025.04.0",
+  "SolutionId": "796c1772-39bc-487d-5cfd-08de328d3553",
+  "Projects": [
+    {
+      "Type": "ProcessOrchestration",
+      "ProjectRelativePath": "Agentic_Main/project.uiproj",
+      "Id": "029020c0-6bae-495a-b790-ffed3fb673cd"
+    }
+  ]
+}

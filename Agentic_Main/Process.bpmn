@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:uipath="http://uipath.org/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="x-uipath-initial-diagram" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="UiPath Studio Web (https://uipath.com)" exporterVersion="5194d994">
+  <bpmn:process id="Process_1" name="Process" isExecutable="false">
+    <bpmn:extensionElements>
+      <uipath:variables version="v1">
+        <uipath:inputOutput id="response" name="response" type="jsonSchema" elementId="Activity_qNnQc5"><![CDATA[{"type":"object","properties":{"Id":{"type":"integer","title":"Queue Item ID","description":"The unique identifier of the queue item"},"QueueDefinitionId":{"type":"integer","title":"Queue Definition ID","description":"The ID of the queue definition"},"Status":{"type":"string","title":"Status","description":"The status of the queue item","enum":["New","InProgress","Failed","Successful","Abandoned","Retried","Deleted"]},"Reference":{"type":"string","title":"Reference","description":"The reference identifier for the queue item"},"Priority":{"type":"string","title":"Priority","description":"The priority level of the queue item","enum":["Low","Normal","High"]},"DeferDate":{"type":"string","format":"date-time","title":"Defer Date","description":"The date and time when the queue item should be processed"},"DueDate":{"type":"string","format":"date-time","title":"Due Date","description":"The deadline for processing the queue item"},"CreationTime":{"type":"string","format":"date-time","title":"Creation Time","description":"The date and time when the queue item was created"},"Progress":{"type":"string","title":"Progress","description":"The progress status of the queue item"},"SpecificContent":{"type":"object","title":"Item Information","description":"The specific content/data associated with the queue item"},"Output":{"type":"object","title":"Output","description":"The output data produced by processing the queue item"}},"required":["Id","QueueDefinitionId","Status"]}]]></uipath:inputOutput>
+        <uipath:inputOutput id="error3" name="Error" type="jsonSchema" elementId="Activity_qNnQc5"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="outTransactionItem" name="out_TransactionItem" type="any" elementId="Activity_8wMo8X" />
+        <uipath:inputOutput id="error" name="Error" type="jsonSchema" elementId="Activity_8wMo8X"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="error2" name="Error" type="jsonSchema" elementId="Activity_LoAEHD"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="outAmount" name="out_Amount" type="string" elementId="Activity_LoAEHD" />
+        <uipath:inputOutput id="outExpenseDate" name="out_ExpenseDate" type="string" elementId="Activity_LoAEHD" />
+        <uipath:inputOutput id="outIsValid" name="out_IsValid" type="boolean" elementId="Activity_LoAEHD" />
+        <uipath:inputOutput id="outNewQueueItemData" name="out_NewQueueItemData" type="json" elementId="Activity_LoAEHD" />
+      </uipath:variables>
+      <uipath:bindings version="v1">
+        <uipath:binding id="bfaKDFNGS" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Agent_ExtractInvoiceData" propertyAttribute="folderPath" />
+        <uipath:binding id="bxGIkKcq5" name="name" type="string" default="Agent_ExtractInvoiceData" resource="process" resourceSubType="Agent" resourceKey="Agent_ExtractInvoiceData" propertyAttribute="name" />
+        <uipath:binding id="beXgPGz4U" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Agent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="bQRI9AHDj" name="name" type="string" default="Agent_InvoiceValidation" resource="process" resourceSubType="Agent" resourceKey="Agent_InvoiceValidation" propertyAttribute="name" />
+        <uipath:binding id="buGMIjhg6" name="folderPath" type="string" resource="process" resourceKey="RPA_GetQueueItem" propertyAttribute="folderPath" />
+        <uipath:binding id="bGYFA6VkF" name="name" type="string" default="RPA_GetQueueItem" resource="process" resourceKey="RPA_GetQueueItem" propertyAttribute="name" />
+        <uipath:binding id="bQkEi8x8H" name="folderPath" type="string" resource="process" resourceKey="T8_GetQueueItemData" propertyAttribute="folderPath" />
+        <uipath:binding id="b9Fyto35h" name="name" type="string" default="T8_GetQueueItemData" resource="process" resourceKey="T8_GetQueueItemData" propertyAttribute="name" />
+        <uipath:binding id="bkC4q2lKy" name="folderPath" type="string" resource="process" resourceKey="T8_UploadExpense" propertyAttribute="folderPath" />
+        <uipath:binding id="bgYyiPvMe" name="name" type="string" default="T8_UploadExpense" resource="process" resourceKey="T8_UploadExpense" propertyAttribute="name" />
+        <uipath:binding id="bbdwGqsZ4" name="folderPath" type="string" resource="app" resourceKey="T8_ExpenseApp" propertyAttribute="folderPath" />
+        <uipath:binding id="b2jaQpkqF" name="name" type="string" default="T8_ExpenseApp" resource="app" resourceKey="T8_ExpenseApp" propertyAttribute="name" />
+        <uipath:binding id="bQ3lvHjXy" name="folderPath" type="string" resource="process" resourceKey="T8_DownloadFile" propertyAttribute="folderPath" />
+        <uipath:binding id="bFrwFCEIx" name="name" type="string" default="T8_DownloadFile" resource="process" resourceKey="T8_DownloadFile" propertyAttribute="name" />
+        <uipath:binding id="bvHtiffAx" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Agent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="bXy0WHVCA" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Agent_InvoiceValidation_1" propertyAttribute="folderPath" />
+        <uipath:binding id="byMcKRHq0" name="name" type="string" default="Agent_InvoiceValidation_1" resource="process" resourceSubType="Agent" resourceKey="Agent_InvoiceValidation_1" propertyAttribute="name" />
+        <uipath:binding id="bs5k4UEXF" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Agent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="bRzpEMTTo" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="T8_ExpenseProj_Agents.agent.Agent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="bkpokGjNB" name="name" type="string" default="T8_ExpenseProj_Agents.agent.Agent_InvoiceValidation" resource="process" resourceSubType="Agent" resourceKey="T8_ExpenseProj_Agents.agent.Agent_InvoiceValidation" propertyAttribute="name" />
+        <uipath:binding id="bPn1QbXFS" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Agent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="bPsEyYJyx" name="folderPath" type="string" resource="process" resourceKey="T8_RunAgent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="bRo7r9e88" name="name" type="string" default="T8_RunAgent_InvoiceValidation" resource="process" resourceKey="T8_RunAgent_InvoiceValidation" propertyAttribute="name" />
+        <uipath:binding id="byc2tQlpR" name="folderPath" type="string" resource="process" resourceKey="T8_RunAgent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="bbuzqpVuH" name="folderPath" type="string" resource="queue" resourceKey="ExpensesToUpload" propertyAttribute="folderPath" />
+        <uipath:binding id="bO6YFvtgv" name="name" type="string" default="ExpensesToUpload" resource="queue" resourceKey="ExpensesToUpload" propertyAttribute="name" />
+        <uipath:binding id="bTnSKWA8t" name="folderPath" type="string" resource="process" resourceKey="T8_RunAgent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="b22WCryr0" name="folderPath" type="string" resource="process" resourceKey="T8_RunAgent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="bjO9nnI86" name="folderPath" type="string" resource="process" resourceKey="T8_RunAgent_InvoiceValidation" propertyAttribute="folderPath" />
+        <uipath:binding id="byMGpqwjU" name="folderPath" type="string" resource="process" resourceKey="T8_GetQueueItemData_1" propertyAttribute="folderPath" />
+        <uipath:binding id="bJRSHPl3m" name="name" type="string" default="T8_GetQueueItemData_1" resource="process" resourceKey="T8_GetQueueItemData_1" propertyAttribute="name" />
+        <uipath:binding id="bjvb25VUO" name="folderPath" type="string" resource="process" resourceKey="T8_RunAgent_InvoiceValidation_1" propertyAttribute="folderPath" />
+        <uipath:binding id="b8p0uKPG7" name="name" type="string" default="T8_RunAgent_InvoiceValidation_1" resource="process" resourceKey="T8_RunAgent_InvoiceValidation_1" propertyAttribute="name" />
+      </uipath:bindings>
+      <uipath:migrationVersion version="11.5" />
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="Event_m6X5g1" name="Start">
+      <bpmn:extensionElements>
+        <uipath:entryPointId value="74d1e9b7-e11b-43e1-9f07-a82d9e4e6ad7" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>edge_DJdEF1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_LoAEHD" name="Validate Invoice (T8_RunAgent_InvoiceValidation)">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v2" />
+          <uipath:context>
+            <uipath:input name="name" type="string" value="=bindings.b8p0uKPG7" />
+            <uipath:input name="folderPath" type="string" value="=bindings.bjvb25VUO" />
+            <uipath:input name="_label" type="string" value="T8_RunAgent_InvoiceValidation_1" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"in_QueueItem":{"type":"any"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"in_QueueItem":"=vars.outTransactionItem"}]]></uipath:input>
+          <uipath:output name="out_Amount" type="string" source="=out_Amount" var="outAmount" />
+          <uipath:output name="out_ExpenseDate" type="string" source="=out_ExpenseDate" var="outExpenseDate" />
+          <uipath:output name="out_IsValid" type="boolean" source="=out_IsValid" var="outIsValid" />
+          <uipath:output name="out_NewQueueItemData" type="json" source="=out_NewQueueItemData" var="outNewQueueItemData" />
+          <uipath:output name="Error" type="jsonSchema" source="=Error" var="error2" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>edge_dbKZyE</bpmn:incoming>
+      <bpmn:outgoing>edge_79HweS</bpmn:outgoing>
+      <bpmn:outgoing>edge_6KrYtF</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_caAbtb" name="End">
+      <bpmn:incoming>edge_TrDjhK</bpmn:incoming>
+      <bpmn:incoming>edge_6KrYtF</bpmn:incoming>
+      <bpmn:incoming>edge_o0LBG8</bpmn:incoming>
+      <bpmn:incoming>edge_1zQnWL</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_vAJE7m" name="Valid Invoice?" default="edge_Gateway_vAJE7m-Event_caAbtbHWsj30">
+      <bpmn:incoming>edge_79HweS</bpmn:incoming>
+      <bpmn:outgoing>edge_Gateway_vAJE7m-Event_caAbtbHWsj30</bpmn:outgoing>
+      <bpmn:outgoing>edge_4QVuXS</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Activity_8wMo8X" name="Get Queue Item (T8_GetQueueItemData)">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v2" />
+          <uipath:context>
+            <uipath:input name="name" type="string" value="=bindings.bJRSHPl3m" />
+            <uipath:input name="folderPath" type="string" value="=bindings.byMGpqwjU" />
+            <uipath:input name="_label" type="string" value="T8_GetQueueItemData_1" />
+          </uipath:context>
+          <uipath:output name="out_TransactionItem" type="any" source="=out_TransactionItem" var="outTransactionItem" />
+          <uipath:output name="Error" type="jsonSchema" source="=Error" var="error" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>edge_DJdEF1</bpmn:incoming>
+      <bpmn:incoming>edge_Gateway_vAJE7m-Event_caAbtbHWsj30</bpmn:incoming>
+      <bpmn:incoming>edge_ZM0X6l</bpmn:incoming>
+      <bpmn:outgoing>edge_NoPJmI</bpmn:outgoing>
+      <bpmn:outgoing>edge_TrDjhK</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_qNnQc5" name="Upload to Kantata (T8_UploadExpense)">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.CreateAndWaitForQueueItem" version="v2" />
+          <uipath:context>
+            <uipath:input name="name" type="string" value="=bindings.bO6YFvtgv" />
+            <uipath:input name="folderPath" type="string" value="=bindings.bbuzqpVuH" />
+            <uipath:input name="_label" type="string" value="ExpensesToUpload" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"SpecificContent":{"type":"object"},"DueDate":{"type":"datetime"},"DeferDate":{"type":"datetime"},"Priority":{"type":"dropdown"},"Reference":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="ItemData" type="json" target="body"><![CDATA[{"SpecificContent":"=vars.outNewQueueItemData","DueDate":null,"DeferDate":null,"Priority":"Normal","Reference":"=vars.outTransactionItem.Reference"}]]></uipath:input>
+          <uipath:output name="response" type="jsonSchema" source="=result" var="response" />
+          <uipath:output name="Error" type="jsonSchema" source="=Error" var="error3" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>edge_4QVuXS</bpmn:incoming>
+      <bpmn:outgoing>edge_ZM0X6l</bpmn:outgoing>
+      <bpmn:outgoing>edge_o0LBG8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_nYrrh5" name="Queue Item?">
+      <bpmn:incoming>edge_NoPJmI</bpmn:incoming>
+      <bpmn:outgoing>edge_dbKZyE</bpmn:outgoing>
+      <bpmn:outgoing>edge_1zQnWL</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="edge_79HweS" sourceRef="Activity_LoAEHD" targetRef="Gateway_vAJE7m" />
+    <bpmn:sequenceFlow id="edge_DJdEF1" sourceRef="Event_m6X5g1" targetRef="Activity_8wMo8X" />
+    <bpmn:sequenceFlow id="edge_NoPJmI" sourceRef="Activity_8wMo8X" targetRef="Gateway_nYrrh5" />
+    <bpmn:sequenceFlow id="edge_Gateway_vAJE7m-Event_caAbtbHWsj30" name="Invalid" sourceRef="Gateway_vAJE7m" targetRef="Activity_8wMo8X">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=!vars.outIsValid</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="edge_TrDjhK" name="Error" sourceRef="Activity_8wMo8X" targetRef="Event_caAbtb">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=vars.error</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="edge_6KrYtF" name="Error" sourceRef="Activity_LoAEHD" targetRef="Event_caAbtb">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=vars.error2</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="edge_4QVuXS" name="Valid" sourceRef="Gateway_vAJE7m" targetRef="Activity_qNnQc5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=vars.outIsValid</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="edge_ZM0X6l" sourceRef="Activity_qNnQc5" targetRef="Activity_8wMo8X" />
+    <bpmn:sequenceFlow id="edge_o0LBG8" name="Error" sourceRef="Activity_qNnQc5" targetRef="Event_caAbtb">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=vars.error3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="edge_dbKZyE" name="Yes" sourceRef="Gateway_nYrrh5" targetRef="Activity_LoAEHD">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=vars.outTransactionItem!=null</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="edge_1zQnWL" name="No" sourceRef="Gateway_nYrrh5" targetRef="Event_caAbtb">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=vars.outTransactionItem==null</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="S_Event_m6X5g1" bpmnElement="Event_m6X5g1">
+        <dc:Bounds x="256.165294963154" y="-239.33426281760012" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="256.165294963154" y="-198.33426281760012" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Activity_LoAEHD" bpmnElement="Activity_LoAEHD">
+        <dc:Bounds x="223.165294963154" y="98.27836287055999" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="223.165294963154" y="183.27836287056" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Event_caAbtb" bpmnElement="Event_caAbtb">
+        <dc:Bounds x="42.165294963154" y="278.0394357960817" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="42.165294963154" y="319.0394357960817" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gateway_vAJE7m" bpmnElement="Gateway_vAJE7m">
+        <dc:Bounds x="248.165294963154" y="212.0394357960817" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="248.165294963154" y="267.0394357960817" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Activity_8wMo8X" bpmnElement="Activity_8wMo8X">
+        <dc:Bounds x="224.165294963154" y="-140.72163712944" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="224.165294963154" y="-55.72163712944001" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Activity_qNnQc5" bpmnElement="Activity_qNnQc5">
+        <dc:Bounds x="223.165294963154" y="316.6999969482422" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="223.165294963154" y="401.6999969482422" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gateway_nYrrh5" bpmnElement="Gateway_nYrrh5">
+        <dc:Bounds x="248.165294963154" y="-7.721637129440012" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="248.165294963154" y="47.27836287055999" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_79HweS" bpmnElement="edge_79HweS">
+        <di:waypoint x="273" y="178" />
+        <di:waypoint x="273" y="212" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_DJdEF1" bpmnElement="edge_DJdEF1">
+        <di:waypoint x="274" y="-203" />
+        <di:waypoint x="274" y="-141" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_NoPJmI" bpmnElement="edge_NoPJmI">
+        <di:waypoint x="274" y="-61" />
+        <di:waypoint x="274" y="-34" />
+        <di:waypoint x="273" y="-34" />
+        <di:waypoint x="273" y="-8" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_Gateway_vAJE7m-Event_caAbtbHWsj30" bpmnElement="edge_Gateway_vAJE7m-Event_caAbtbHWsj30">
+        <di:waypoint x="298.165294963154" y="237.0394357960817" />
+        <di:waypoint x="344.165294963154" y="237" />
+        <di:waypoint x="344.165294963154" y="-101" />
+        <di:waypoint x="324" y="-101" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_TrDjhK" bpmnElement="edge_TrDjhK">
+        <di:waypoint x="224" y="-101" />
+        <di:waypoint x="44" y="-101" />
+        <di:waypoint x="60" y="72" />
+        <di:waypoint x="60" y="278" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_6KrYtF" bpmnElement="edge_6KrYtF">
+        <di:waypoint x="223" y="138" />
+        <di:waypoint x="60" y="138" />
+        <di:waypoint x="60" y="278" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_4QVuXS" bpmnElement="edge_4QVuXS">
+        <di:waypoint x="273" y="262" />
+        <di:waypoint x="273" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_ZM0X6l" bpmnElement="edge_ZM0X6l">
+        <di:waypoint x="323.165294963154" y="356.6999969482422" />
+        <di:waypoint x="415.165294963154" y="357" />
+        <di:waypoint x="415.165294963154" y="128" />
+        <di:waypoint x="414.165294963154" y="128" />
+        <di:waypoint x="414.165294963154" y="-101" />
+        <di:waypoint x="324.165294963154" y="-100.72163712944001" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_o0LBG8" bpmnElement="edge_o0LBG8">
+        <di:waypoint x="223" y="357" />
+        <di:waypoint x="60" y="357" />
+        <di:waypoint x="60" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_dbKZyE" bpmnElement="edge_dbKZyE">
+        <di:waypoint x="273" y="42" />
+        <di:waypoint x="273" y="98" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_edge_1zQnWL" bpmnElement="edge_1zQnWL">
+        <di:waypoint x="248" y="17" />
+        <di:waypoint x="60" y="17" />
+        <di:waypoint x="60" y="278" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
