@@ -1,0 +1,209 @@
+# =============================================================================
+# UiPath Solution CI/CD Pipeline
+# =============================================================================
+#
+# PREREQUISITES:
+#
+# 1. UiPath External Application (Confidential)
+#    - Create in: Admin → External Applications
+#    - Type: Confidential Application
+#    - Required Scopes:
+#      Orchestrator category:
+#        • OR.Execution,OR.Execution.Read, OR.Execution.Write
+#      Automation Solutions category:
+#        • AutomationSolutions
+#        • Solutions.Packages, Solutions.Packages.Read, Solutions.Packages.Write
+#        • Solutions.Deployments, Solutions.Deployments.Read, Solutions.Deployments.Write
+#
+# 2. GitHub Repository Secrets:
+#    - EXTERNAL_APP_SECRET: The secret from your UiPath external application
+#
+# 3. GitHub Repository Variables:
+#    - EXTERNAL_APP_ID: External application ID (e.g., 59c98a6b-64e2-421b-bdd1-32a0c8f8fddd)
+#    - ORCHESTRATOR_URL: UiPath Orchestrator URL (e.g., https://staging.uipath.com/)
+#    - ORG_NAME: Organization name in UiPath (e.g., redfoxstaging)
+#    - STAGING_ORCHESTRATOR_TENANT: Staging tenant name (e.g., DefaultTenant)
+#    - PRODUCTION_ORCHESTRATOR_TENANT: Production tenant name (e.g., Production)
+#
+# 4. GitHub Environment Variables:
+#    STAGING environment:
+#      - ORCHESTRATOR_FOLDER: Target folder for staging deployment
+#      - PARENT_FOLDER: Parent folder for staging deployment
+#    PRODUCTION environment:
+#      - ORCHESTRATOR_FOLDER: Target folder for production deployment
+#      - DEPLOYMENT_PARENT_FOLDER: Parent folder for production deployment
+#
+# 5. GitHub Environments:
+#    - STAGING: Environment for staging deployments
+#    - PRODUCTION: Environment for production deployments (configure approval rules)
+#
+# =============================================================================
+
+name: Publish UiPath Solution
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  # ============================================
+  # STAGE 1: Deploy to Staging
+  # ============================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    environment: STAGING
+    outputs:
+      package-version: ${{ steps.set-version.outputs.version }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set version
+        id: set-version
+        run: echo "version=1.0.${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install UiPath CLI (Latest - Linux)
+        run: |
+          dotnet tool install --global UiPath.CLI.Linux
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+          uipcli --version
+
+      - name: Pack Solution
+        run: |
+          uipcli solution pack . \
+            --output ./packages \
+            --version "${{ steps.set-version.outputs.version }}"
+          echo "Package contents:"
+          ls -la ./packages/
+
+      - name: Upload Solution Package to Staging
+        run: |
+          PACKAGE_FILE=$(find ./packages -name "*.zip" | head -1)
+          echo "Uploading package: $PACKAGE_FILE"
+          uipcli solution upload-package "$PACKAGE_FILE" \
+            -U "${{ vars.ORCHESTRATOR_URL }}" \
+            -T "${{ vars.STAGING_ORCHESTRATOR_TENANT }}" \
+            -A "${{ vars.ORG_NAME }}" \
+            -I "${{ vars.EXTERNAL_APP_ID }}" \
+            -S "${{ secrets.EXTERNAL_APP_SECRET }}"
+
+      - name: Deploy Solution to Staging
+        run: |
+          uipcli solution deploy "Procurement Process" \
+            -v "${{ steps.set-version.outputs.version }}" \
+            -d "Procurement-Process-Staging" \
+            -f "${{ vars.ORCHESTRATOR_FOLDER }}" \
+            --deploymentParentFolder "${{ vars.PARENT_FOLDER }}" \
+            -U "${{ vars.ORCHESTRATOR_URL }}" \
+            -T "${{ vars.STAGING_ORCHESTRATOR_TENANT }}" \
+            -A "${{ vars.ORG_NAME }}" \
+            -I "${{ vars.EXTERNAL_APP_ID }}" \
+            -S "${{ secrets.EXTERNAL_APP_SECRET }}"
+
+      - name: Activate Staging Deployment
+        run: |
+          uipcli solution deploy-activate "Procurement-Process-Staging" \
+            -U "${{ vars.ORCHESTRATOR_URL }}" \
+            -T "${{ vars.STAGING_ORCHESTRATOR_TENANT }}" \
+            -A "${{ vars.ORG_NAME }}" \
+            -I "${{ vars.EXTERNAL_APP_ID }}" \
+            -S "${{ secrets.EXTERNAL_APP_SECRET }}"
+
+      - name: Staging Summary
+        if: always()
+        run: |
+          echo "## Staging Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Solution: Procurement Process" >> $GITHUB_STEP_SUMMARY
+          echo "- Version: ${{ steps.set-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Tenant: ${{ vars.STAGING_ORCHESTRATOR_TENANT }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Parent Folder: ${{ vars.PARENT_FOLDER }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Deployment Folder: ${{ vars.ORCHESTRATOR_FOLDER }}" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================
+  # STAGE 2: Deploy to Production (with approval)
+  # ============================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    environment: PRODUCTION
+    
+    steps:
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install UiPath CLI (Latest - Linux)
+        run: |
+          dotnet tool install --global UiPath.CLI.Linux
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+          uipcli --version
+
+      - name: Download Package from Staging
+        run: |
+          mkdir -p ./packages
+          uipcli solution download-package "Procurement Process" \
+            -v "${{ needs.deploy-staging.outputs.package-version }}" \
+            -d ./packages \
+            -U "${{ vars.ORCHESTRATOR_URL }}" \
+            -T "${{ vars.STAGING_ORCHESTRATOR_TENANT }}" \
+            -A "${{ vars.ORG_NAME }}" \
+            -I "${{ vars.EXTERNAL_APP_ID }}" \
+            -S "${{ secrets.EXTERNAL_APP_SECRET }}"
+          echo "Downloaded package:"
+          ls -la ./packages/
+
+      - name: Upload Package to Production
+        run: |
+          PACKAGE_FILE=$(find ./packages -name "*.zip" | head -1)
+          echo "Uploading package to Production: $PACKAGE_FILE"
+          uipcli solution upload-package "$PACKAGE_FILE" \
+            -U "${{ vars.ORCHESTRATOR_URL }}" \
+            -T "${{ vars.PRODUCTION_ORCHESTRATOR_TENANT }}" \
+            -A "${{ vars.ORG_NAME }}" \
+            -I "${{ vars.EXTERNAL_APP_ID }}" \
+            -S "${{ secrets.EXTERNAL_APP_SECRET }}"
+
+      - name: Deploy Solution to Production
+        run: |
+          uipcli solution deploy "Procurement Process" \
+            -v "${{ needs.deploy-staging.outputs.package-version }}" \
+            -d "Procurement-Process-Production" \
+            -f "${{ vars.ORCHESTRATOR_FOLDER }}" \
+            --deploymentParentFolder "${{ vars.DEPLOYMENT_PARENT_FOLDER }}" \
+            -U "${{ vars.ORCHESTRATOR_URL }}" \
+            -T "${{ vars.PRODUCTION_ORCHESTRATOR_TENANT }}" \
+            -A "${{ vars.ORG_NAME }}" \
+            -I "${{ vars.EXTERNAL_APP_ID }}" \
+            -S "${{ secrets.EXTERNAL_APP_SECRET }}"
+
+      - name: Activate Production Deployment
+        run: |
+          uipcli solution deploy-activate "Procurement-Process-Production" \
+            -U "${{ vars.ORCHESTRATOR_URL }}" \
+            -T "${{ vars.PRODUCTION_ORCHESTRATOR_TENANT }}" \
+            -A "${{ vars.ORG_NAME }}" \
+            -I "${{ vars.EXTERNAL_APP_ID }}" \
+            -S "${{ secrets.EXTERNAL_APP_SECRET }}"
+
+      - name: Production Summary
+        if: always()
+        run: |
+          echo "## Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Solution: Procurement Process" >> $GITHUB_STEP_SUMMARY
+          echo "- Version: ${{ needs.deploy-staging.outputs.package-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- URL: ${{ vars.ORCHESTRATOR_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Tenant: ${{ vars.PRODUCTION_ORCHESTRATOR_TENANT }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Parent Folder: ${{ vars.DEPLOYMENT_PARENT_FOLDER }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Deployment Folder: ${{ vars.ORCHESTRATOR_FOLDER }}" >> $GITHUB_STEP_SUMMARY
