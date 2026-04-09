@@ -109,6 +109,7 @@
       <bpmn:outgoing>edge_TrDjhK</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_qNnQc5" name="Upload to Kantata (T8_UploadExpense)">
+      <bpmn:documentation>description</bpmn:documentation>
       <bpmn:extensionElements>
         <uipath:activity version="v1">
           <uipath:type value="Orchestrator.CreateAndWaitForQueueItem" version="v2" />
